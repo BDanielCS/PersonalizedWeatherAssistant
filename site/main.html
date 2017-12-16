@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" >
 <head>
+	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.169.0.min.js"></script>
+
   <meta charset="UTF-8">
   <title>Welcome!</title>
       <style>
@@ -46,7 +48,7 @@ body{
 .header{
 	position: fixed;
 	top: calc(1%);
-	left: calc(40%);
+	left: calc(30%);
 	z-index: 2;
 }
 
@@ -54,8 +56,19 @@ body{
 	float: center;
 	color: #fff;
 	font-family: 'Exo', sans-serif;
-	font-size: 35px;
+	font-size: 4em;
+	font-weight: 400;
+	letter-spacing: 2px;
+}
+
+.sub-header{
+	float: center;
+	color: #fff;
+	font-family: 'Exo', sans-serif;
+	font-size: 2.5em;
 	font-weight: 200;
+	position:absolute;
+	left: calc(30%);
 }
 
 .header div span{
@@ -76,6 +89,9 @@ body{
 	color: White;
 
 	background: transparent;
+	user-select: none;
+	outline:0px !important;
+    -webkit-appearance:none;
 	border: 0 none;
 	height: 20em;
 	width: 35em;
@@ -103,13 +119,13 @@ body{
 
 .less-button{
 	position: fixed;
-	top: calc(30%);
+	top: calc(25%);
 	right: calc(25%);
 }
 
 .more-button{
 	position: fixed;
-	top: calc(40%);
+	top: calc(35%);
 	right: calc(25%);
 }
 
@@ -128,7 +144,8 @@ body{
   <div class="body"></div>
 		<div class="grad"></div>
 		<div class="header">
-			<div>P<span>ersonalized </span>W<span>eather</span> A<span>ssistant</span><br><div id='Welcome'></div></div>
+			<div>P<span>ersonalized </span>W<span>eather</span> A<span>ssistant</span></div>
+			<h4 id='Welcome' class="sub-header"></div>
 		</div>
 		<br>
 		<div class="personalPage">
@@ -144,7 +161,10 @@ body{
 
 			<!-- System scripts scripts -->
 			<script>
-				// get actual name for guesrt
+				// get actual name for guest
+				AWS.config.update({region:'us-east-1'})
+				var lambda = new AWS.Lambda({region: 'us-east-1', apiVersion: '2015-03-31'});
+				
 				var headerItem = document.getElementById('Welcome');
 				var name = 'Brandon';
 				headerItem.innerHTML = 'Welcome ' + name;
@@ -160,11 +180,6 @@ body{
 				function logOut() {
 					document.location.href = 'index.html';
 				}
-
-				// function getLocation() TODO
-
-				
-				
 			</script>
 		</div>
 	</body>

@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" >
 <head>
+	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.169.0.min.js"></script>
   <meta charset="UTF-8">
-  <title>Personalized Weather Assistant</title>
+  <title>PWA</title>
       <style>
       @import url(https://fonts.googleapis.com/css?family=Exo:100,200,400);
 			@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
@@ -55,7 +56,7 @@ body{
 	color: #fff;
 	font-family: 'Exo', sans-serif;
 	font-size: 55px;
-	font-weight: 200;
+	font-weight: 400;
 }
 
 .header div span{
@@ -139,10 +140,10 @@ body{
 .helper{
 	position: absolute;
 	top: calc(100%);
-	right: calc(15%);
+	right: calc(10%);
 	color:white;
 	font-weight: 300;
-	font-size: 2.5em
+	font-size: 2em
 }
 
 ::-webkit-input-placeholder{
@@ -169,15 +170,34 @@ body{
 			<input type="password" placeholder="password" name="password"><br>
 			<input type="button" value="Login", onClick="logInClick()"><br>
 			<input type="button" value="Create Account" onClick="createAccount()"><br>
-			<h2 class="helper">Is it cold for YOU?</h2>
+			<h2 class="helper">Weather Tailored for YOU</h2>
 			<!-- Log in verification and create account options -->
 			<script>
+
+				AWS.config.update({region:'us-east-1'})
+				var lambda = new AWS.Lambda({region: 'us-east-1', apiVersion: '2015-03-31'});
 
 				function logInClick(){
 					var username = document.getElementsByName("user")[0].value;
 					var password = document.getElementsByName('password')[0].value;
 					
-					// invoke aws services to verify user
+					/*// invoke aws services to verify user
+					var params = {
+  					FunctionName : 'authenticate',
+  					InvocationType : 'RequestResponse',
+  					LogType : 'None'
+					};
+
+					var pullResults;
+					lambda.invoke(params, function(error, data) {
+  					if (error) {
+   						 prompt(error);
+  					} else {
+    					pullResults = JSON.parse(data.Payload);
+  					}
+					});
+					*/
+			
 
 					// exec only if good
 					document.location.href = 'main.html';
@@ -188,6 +208,22 @@ body{
 					var password = document.getElementsByName('password')[0].value;
 
 					// invoke aws services to create
+					/*
+					var params = {
+  					FunctionName : 'createUser',
+  					InvocationType : 'RequestResponse',
+  					LogType : 'None'
+					};
+
+					var pullResults;
+					lambda.invoke(params, function(error, data) {
+  					if (error) {
+   						 prompt(error);
+  					} else {
+    					pullResults = JSON.parse(data.Payload);
+  					}
+					});
+					*/
 				}
 			</script>
 		</div>
