@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Personalized Weather Assistant</title>
+      <style>
+      @import url(https://fonts.googleapis.com/css?family=Exo:100,200,400);
+			@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
+
+body{
+	margin: 0;
+	padding: 0;
+	background: #fff;
+
+	color: #fff;
+	font-family: Arial;
+	font-size: 12px;
+}
+
+.body{
+	position: absolute;
+	top: -20px;
+	left: -20px;
+	right: -40px;
+	bottom: -40px;
+	width: auto;
+	height: auto;
+	background-image: url('img/background-1.jpg');
+	background-size: cover;
+	z-index: 0;
+}
+
+.grad{
+	position: absolute;
+	top: -20px;
+	left: -20px;
+	right: -40px;
+	bottom: -40px;
+	width: auto;
+	height: auto;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.65))); /* Chrome,Safari4+ */
+	z-index: 1;
+	opacity: 0.7;
+}
+
+.header{
+	position: absolute;
+	top: calc(50% - 250px);
+	left: calc(50% - 400px);
+	z-index: 2;
+}
+
+.header div{
+	float: left;
+	color: #fff;
+	font-family: 'Exo', sans-serif;
+	font-size: 55px;
+	font-weight: 200;
+}
+
+.header div span{
+	color: #5379fa !important;
+}
+
+.login{
+	position: absolute;
+	top: calc(50% - 150px);
+	left: calc(50% - 210px);
+	height: 250px;
+	width: 350px;
+	padding: 10px;
+	z-index: 2;
+}
+
+.login input[type=text]{
+	width: 350px;
+	height: 40px;
+	background: transparent;
+	border: 1px solid rgba(255,255,255,0.6);
+	border-radius: 2px;
+	color: #fff;
+	font-family: 'Exo', sans-serif;
+	font-size: 18px;
+	font-weight: 400;
+	padding: 4px;
+}
+
+.login input[type=password]{
+	width: 350px;
+	height: 40px;
+	background: transparent;
+	border: 1px solid rgba(255,255,255,0.6);
+	border-radius: 2px;
+	color: #fff;
+	font-family: 'Exo', sans-serif;
+	font-size: 18px;
+	font-weight: 400;
+	padding: 4px;
+	margin-top: 10px;
+}
+
+.login input[type=button]{
+	width: 360px;
+	height: 55px;
+	background: #fff;
+	border: 1px solid #fff;
+	cursor: pointer;
+	border-radius: 2px;
+	color: #a18d6c;
+	font-family: 'Exo', sans-serif;
+	font-size: 16px;
+	font-weight: 400;
+	padding: 6px;
+	margin-top: 10px;
+}
+
+.login input[type=button]:hover{
+	opacity: 0.8;
+}
+
+.login input[type=button]:active{
+	opacity: 0.6;
+}
+
+.login input[type=text]:focus{
+	outline: none;
+	border: 1px solid rgba(255,255,255,0.9);
+}
+
+.login input[type=password]:focus{
+	outline: none;
+	border: 1px solid rgba(255,255,255,0.9);
+}
+
+.login input[type=button]:focus{
+	outline: none;
+}
+
+.helper{
+	position: absolute;
+	top: calc(100%);
+	right: calc(15%);
+	color:white;
+	font-weight: 300;
+	font-size: 2.5em
+}
+
+::-webkit-input-placeholder{
+   color: rgba(255,255,255,0.6);
+}
+
+::-moz-input-placeholder{
+   color: rgba(255,255,255,0.6);
+}
+    </style>
+
+</head>
+
+<!-- Cue cool intro-->
+<body>
+  <div class="body"></div>
+		<div class="grad"></div>
+		<div class="header">
+			<div>P<span>ersonalized </span>W<span>eather</span> A<span>ssistant</span></div>
+		</div>
+		<br>
+		<div class="login">
+			<input type="text" placeholder="username" name="user"><br>
+			<input type="password" placeholder="password" name="password"><br>
+			<input type="button" value="Login", onClick="logInClick()"><br>
+			<input type="button" value="Create Account" onClick="createAccount()"><br>
+			<h2 class="helper">Is it cold for YOU?</h2>
+			<!-- Log in verification and create account options -->
+			<script>
+
+				function logInClick(){
+					var username = document.getElementsByName("user")[0].value;
+					var password = document.getElementsByName('password')[0].value;
+					
+					// invoke aws services to verify user
+
+					// exec only if good
+					document.location.href = 'main.html';
+				}
+
+				function createAccount() {
+					var username = document.getElementsByName("user")[0].value;
+					var password = document.getElementsByName('password')[0].value;
+
+					// invoke aws services to create
+				}
+			</script>
+		</div>
+	</body>
+</html>
