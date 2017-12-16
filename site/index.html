@@ -174,20 +174,29 @@ body{
 			<!-- Log in verification and create account options -->
 			<script>
 
-				AWS.config.update({region:'us-east-1'})
-				var lambda = new AWS.Lambda({region: 'us-east-1', apiVersion: '2015-03-31'});
+				AWS.config.update({
+ 					credentials: new AWS.CognitoIdentityCredentials({
+    			IdentityPoolId: 'us-east-1-foo-bar'
+  			}),
+  				region: 'us-east-1'
+				});
 
+				var lambda = new AWS.Lambda({region: 'us-east-1', apiVersion: '2015-03-31'});
 				function logInClick(){
 					var username = document.getElementsByName("user")[0].value;
 					var password = document.getElementsByName('password')[0].value;
 					
-					/*// invoke aws services to verify user
+					// invoke aws services to verify user
 					var params = {
   					FunctionName : 'authenticate',
   					InvocationType : 'RequestResponse',
+  					Payload: {
+  						'Username':username,
+  						'Password':password
+  					},
   					LogType : 'None'
 					};
-
+					/*
 					var pullResults;
 					lambda.invoke(params, function(error, data) {
   					if (error) {
@@ -208,13 +217,14 @@ body{
 					var password = document.getElementsByName('password')[0].value;
 
 					// invoke aws services to create
-					/*
 					var params = {
   					FunctionName : 'createUser',
+  					ClientContext: 'Mysite',
   					InvocationType : 'RequestResponse',
+  					Payload: '{"Username":username,"Password":password}',
   					LogType : 'None'
 					};
-
+					
 					var pullResults;
 					lambda.invoke(params, function(error, data) {
   					if (error) {
@@ -223,7 +233,8 @@ body{
     					pullResults = JSON.parse(data.Payload);
   					}
 					});
-					*/
+
+					prompt(pullResults)
 				}
 			</script>
 		</div>

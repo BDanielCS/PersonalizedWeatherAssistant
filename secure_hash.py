@@ -95,3 +95,15 @@ def deleteUser(field1, field2):
 	)
 
 	return response
+
+
+def createUser_hander(event, context):
+	"""
+	AWS Lambda handler for to create
+	user within database
+	"""
+	field1 = event['field1']
+	field2 = event['field2']
+
+	createUser(field1, field2)
+	
