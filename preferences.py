@@ -26,13 +26,14 @@ def predict(user, passw, weather_features):
 	"""
 	ml_client = boto3.client('machinelearning')
 	db_client = boto3.client('dynamodb')
+	userID = total_hash(user,passw)
 
 	# check to see if this user has any applicable stored predictions
 	get_response = db_client.get_item(
 		TableName='WeatherDecision',
 		Key={
 			'userID':{
-				'S':total_hash(user,passw)
+				'S': userID
 			},
 			'Temperature':{
 				'N':str(math.floor(weather_features['raw_temp']))
