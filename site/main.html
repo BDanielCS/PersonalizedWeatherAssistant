@@ -165,10 +165,8 @@ body{
 			<input type="button" class="semi-transparent-button logout" value="Log Out" onClick="logOut()">
 			<input type="button" class="semi-transparent-button location-button" value="Switch Location" onClick="switchLocation()">
 			
-
 			<!-- System scripts scripts -->
 			<script>
-				//setup aws
 				// Initialize the Amazon Cognito credentials provider
 				AWS.config.update({
     			accessKeyId: ,
@@ -177,23 +175,64 @@ body{
 				});
 
 				var lambda = new AWS.Lambda({region: 'us-east-1', apiVersion: '2015-03-31'});
-				// get actual name for guest				
 				var headerItem = document.getElementById('Welcome');
+				headerItem.innerHTML = 'Welcome ' + name;
 				var name = localStorage.getItem('username');
 				var pass = localStorage.getItem('pass');
-				headerItem.innerHTML = 'Welcome ' + name;
 
 				function tooHigh(){
+
+					var predictedLayers = localStorage.getItem('Layers');
 					// aws call to reduce number  of layers
+					var params = {
+  					FunctionName : 'updatePrediction',
+  					InvocationType : 'RequestResponse',
+  					Payload: '{"Username":"' + name +'","Password":"' + pass +'","State":"' + state + '","City":"' + city +'","Layers":"' + (predictedLayers - 1).toString() + '"}',
+  					LogType : 'None'
+					};
+					
+					lambda.invoke(params, function(error, data) {
+  					if (error) {
+   						prompt(error);
+  					} else {
+    					// exec only if good
+							if(data['StatusCode'] == 200){
+								//print the results
+								console.log(data);
+							}else{
+								alert("Failed ML Prediction");
+							}
+  					}
+					});
 
 
 					alert("Thank you.  Response recorded.");
 				}
 
 				function tooLow(){
+
+					var predictedLayers = localStorage.getItem('Layers');
 					//aws call to increase number of layers
-
-
+					var params = {
+  					FunctionName : 'updatePrediction',
+  					InvocationType : 'RequestResponse',
+  					Payload: '{"Username":"' + name +'","Password":"' + pass +'","State":"' + state + '","City":"' + city +'","Layers":"' + (predictedLayers + 1).toString() + '"}',
+  					LogType : 'None'
+					};
+					
+					lambda.invoke(params, function(error, data) {
+  					if (error) {
+   						prompt(error);
+  					} else {
+    					// exec only if good
+							if(data['StatusCode'] == 200){
+								//print the results
+								console.log(data);
+							}else{
+								alert("Failed ML Prediction");
+							}
+  					}
+					});
 					alert("Thank you.  Response recorded.");
 				}
 
@@ -202,6 +241,8 @@ body{
 					var state = prompt("Please enter state abreviation. (MD)");
 					var city = prompt("Please enter city.");
 
+					localStorage.setItem('City', city);
+					localStorage.setItem('State', state);
 					// invoke aws services to verify user
 					var params = {
   					FunctionName : 'predict',
@@ -218,6 +259,8 @@ body{
 							if(data['StatusCode'] == 200){
 								//print the results
 								console.log(data);
+
+								//localeStorage.setItem('Layers', 2);
 							}else{
 								alert("Failed ML Prediction");
 							}

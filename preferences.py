@@ -12,6 +12,8 @@ of layers.
 import boto3
 import math
 import json
+import weather
+import secure_hash
 
 
 def predict(user, passw, weather_features):
@@ -26,7 +28,7 @@ def predict(user, passw, weather_features):
 	"""
 	ml_client = boto3.client('machinelearning')
 	db_client = boto3.client('dynamodb')
-	userID = total_hash(user,passw)
+	userID = secure_hash.total_hash(user,passw)
 
 	# check to see if this user has any applicable stored predictions
 	get_response = db_client.get_item(
@@ -41,12 +43,7 @@ def predict(user, passw, weather_features):
 		}
 	)
 
-	# if we got a match, return the previous setting instead
-	if len(get_response) >= 2:
-		return int(get_response['Item']['Subconditions']['M']['Layers']['N'])
-
-
-	# perform a prediction using the model
+	# perform a prediction using th
 	weather_conditions = {
 		'UserID':userID,
 		'Temperature': str(math.floor(weather_features['raw_temp'])),
@@ -55,6 +52,10 @@ def predict(user, passw, weather_features):
 		'Snowing': '1' if int(weather_features['snow']) > 1 else '0',
 		'Cloudy': '1' if weather_features['general forcast'] == 'Cloudy' else '0'
 	}
+
+	# if we got a match, return the previous setting instead
+	if len(get_response) >= 2:
+		return int(get_response['Item']['Subconditions']['M']['Layers']['N']), weather_conditions
 
 	response = ml_client.predict(
 		MLModelId='ml-RgLcS6do8rZ',
@@ -66,7 +67,7 @@ def predict(user, passw, weather_features):
 	return num_layers, weather_conditions
 
 
-def updatePrediction(UID, desired_layers, weather_conditions):
+def updatePrediction(user,passw,desired_layers, weather_conditions):
 	"""
 	Save the current weather features with the user's desired
 	number of layers into the dynamodb.  Weather conditions is expected
@@ -80,7 +81,7 @@ def updatePrediction(UID, desired_layers, weather_conditions):
 		TableName='WeatherDecision',
 		Item={
 			'userID':{
-				'S': UID
+				'S': total_hash(user,passw)
 			},
 			'Temperature':{
 				'N': weather_conditions['Temperature']
@@ -108,3 +109,16 @@ def updatePrediction(UID, desired_layers, weather_conditions):
 	)
 
 	return response
+
+def weather_handler(event, context):
+	user = event['Username']
+	passw = event['Password']
+	state = event['State']
+	city = event['City']
+
+	weather_features = weather.getCurrentWeather(state, city)
+	layers, conditions = predict(user ,passw, weather_features)
+
+	return {"Layers":layers, "Weather":conditions}
+
+
