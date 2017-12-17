@@ -105,5 +105,20 @@ def createUser_hander(event, context):
 	field1 = event['field1']
 	field2 = event['field2']
 
-	createUser(field1, field2)
-	
+	response = createUser(field1, field2)
+
+	return {'Response':response}
+
+
+def login_handler(event, context):
+	"""
+		AWSLambda handler for authenticate
+		function
+	"""
+	field1 = event['field1']
+	field2 = event['field2']
+
+	response = authenticate(field1, field2)
+
+	return {'Response': response}
+

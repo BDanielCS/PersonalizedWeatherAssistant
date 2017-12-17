@@ -173,15 +173,15 @@ body{
 			<h2 class="helper">Weather Tailored for YOU</h2>
 			<!-- Log in verification and create account options -->
 			<script>
-
-				AWS.config.update({
- 					credentials: new AWS.CognitoIdentityCredentials({
-    			IdentityPoolId: 'us-east-1-foo-bar'
-  			}),
-  				region: 'us-east-1'
+				// Initialize the Amazon Cognito credentials provider
+				AWS.config.region = 'us-east-1';
+				AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    			IdentityPoolId: 'us-east-1:518f51cb-0f83-41c1-ad7d-1c2af0927fd2',
 				});
 
 				var lambda = new AWS.Lambda({region: 'us-east-1', apiVersion: '2015-03-31'});
+				
+				// perform log in aws lambda invocation
 				function logInClick(){
 					var username = document.getElementsByName("user")[0].value;
 					var password = document.getElementsByName('password')[0].value;
@@ -212,19 +212,21 @@ body{
 					document.location.href = 'main.html';
 				}
 
+				// aws creation of account invocation
 				function createAccount() {
+					// grab fields to create
 					var username = document.getElementsByName("user")[0].value;
 					var password = document.getElementsByName('password')[0].value;
 
 					// invoke aws services to create
+					var payload = '{"Username":' + username +',"Password:' + password +'}'
 					var params = {
   					FunctionName : 'createUser',
-  					ClientContext: 'Mysite',
   					InvocationType : 'RequestResponse',
-  					Payload: '{"Username":username,"Password":password}',
   					LogType : 'None'
 					};
 					
+					//invoke createUSer function
 					var pullResults;
 					lambda.invoke(params, function(error, data) {
   					if (error) {
@@ -234,7 +236,8 @@ body{
   					}
 					});
 
-					prompt(pullResults)
+					alert(pullResults)
+
 				}
 			</script>
 		</div>
