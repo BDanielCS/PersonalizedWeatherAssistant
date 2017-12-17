@@ -174,9 +174,9 @@ body{
 			<!-- Log in verification and create account options -->
 			<script>
 				// Initialize the Amazon Cognito credentials provider
-				AWS.config.region = 'us-east-1';
-				AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-    			IdentityPoolId: 'us-east-1:518f51cb-0f83-41c1-ad7d-1c2af0927fd2',
+				AWS.config.update({
+    			
+   	 			"region": "us-east-1"   
 				});
 
 				var lambda = new AWS.Lambda({region: 'us-east-1', apiVersion: '2015-03-31'});
@@ -190,26 +190,24 @@ body{
 					var params = {
   					FunctionName : 'authenticate',
   					InvocationType : 'RequestResponse',
-  					Payload: {
-  						'Username':username,
-  						'Password':password
-  					},
+  					Payload: '{"Username":"' + username +'","Password":"' + password +'"}',
   					LogType : 'None'
 					};
-					/*
+					
 					var pullResults;
 					lambda.invoke(params, function(error, data) {
   					if (error) {
-   						 prompt(error);
+   						prompt(error);
   					} else {
-    					pullResults = JSON.parse(data.Payload);
+    					console.log(data);
+    					// exec only if good
+							if(data['StatusCode'] == 200){
+								document.location.href = 'main.html';
+							}else{
+								alert("Incorrect login credentials");
+							}
   					}
 					});
-					*/
-			
-
-					// exec only if good
-					document.location.href = 'main.html';
 				}
 
 				// aws creation of account invocation
@@ -219,10 +217,12 @@ body{
 					var password = document.getElementsByName('password')[0].value;
 
 					// invoke aws services to create
-					var payload = '{"Username":' + username +',"Password:' + password +'}'
+					var payload = '{"Username":"' + username +'","Password":"' + password +'"}'
+
 					var params = {
   					FunctionName : 'createUser',
   					InvocationType : 'RequestResponse',
+  					Payload: payload,
   					LogType : 'None'
 					};
 					
@@ -231,13 +231,8 @@ body{
 					lambda.invoke(params, function(error, data) {
   					if (error) {
    						 prompt(error);
-  					} else {
-    					pullResults = JSON.parse(data.Payload);
   					}
 					});
-
-					alert(pullResults)
-
 				}
 			</script>
 		</div>
