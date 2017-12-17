@@ -121,4 +121,3 @@ def login_handler(event, context):
 	response = authenticate(field1, field2)
 
 	return {'Response': response}
-
