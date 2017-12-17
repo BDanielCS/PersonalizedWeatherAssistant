@@ -14,7 +14,7 @@ import math
 import json
 
 
-def predict(userID, weather_features):
+def predict(user, passw, weather_features):
 	"""
 	Invoke the aws ml model to offer a 
 	prediction for the number of layers to
@@ -32,7 +32,7 @@ def predict(userID, weather_features):
 		TableName='WeatherDecision',
 		Key={
 			'userID':{
-				'S':userID
+				'S':total_hash(user,passw)
 			},
 			'Temperature':{
 				'N':str(math.floor(weather_features['raw_temp']))

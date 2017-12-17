@@ -168,27 +168,65 @@ body{
 
 			<!-- System scripts scripts -->
 			<script>
-				// get actual name for guest
-				AWS.config.update({region:'us-east-1'})
+				//setup aws
+				// Initialize the Amazon Cognito credentials provider
+				AWS.config.update({
+    			accessKeyId: "AKIAJTCPHBVQNSLXXVMA",
+    			secretAccessKey: "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",
+   	 			"region": "us-east-1"   
+				});
+
 				var lambda = new AWS.Lambda({region: 'us-east-1', apiVersion: '2015-03-31'});
-				
+				// get actual name for guest				
 				var headerItem = document.getElementById('Welcome');
-				var name = 'Brandon';
+				var name = localStorage.getItem('username');
+				var pass = localStorage.getItem('pass');
 				headerItem.innerHTML = 'Welcome ' + name;
 
 				function tooHigh(){
 					// aws call to reduce number  of layers
+
+
+					alert("Thank you.  Response recorded.");
 				}
 
 				function tooLow(){
 					//aws call to increase number of layers
+
+
+					alert("Thank you.  Response recorded.");
 				}
 
 				function switchLocation(){
-					// aws call to get new weather info
+					// ask for new location to update current suggestions
+					var state = prompt("Please enter state abreviation. (MD)");
+					var city = prompt("Please enter city.");
+
+					// invoke aws services to verify user
+					var params = {
+  					FunctionName : 'predict',
+  					InvocationType : 'RequestResponse',
+  					Payload: '{"Username":"' + name +'","Password":"' + pass +'","State":"' + state + '","City":"' + city +'"}',
+  					LogType : 'None'
+					};
+					
+					lambda.invoke(params, function(error, data) {
+  					if (error) {
+   						prompt(error);
+  					} else {
+    					// exec only if good
+							if(data['StatusCode'] == 200){
+								//print the results
+								console.log(data);
+							}else{
+								alert("Failed ML Prediction");
+							}
+  					}
+					});
 				}
 
 				function logOut() {
+					//switch back to home
 					document.location.href = 'index.html';
 				}
 			</script>

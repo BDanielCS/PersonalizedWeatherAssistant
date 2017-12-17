@@ -175,7 +175,8 @@ body{
 			<script>
 				// Initialize the Amazon Cognito credentials provider
 				AWS.config.update({
-    			
+    			accessKeyId: "AKIAJTCPHBVQNSLXXVMA",
+    			secretAccessKey: "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",
    	 			"region": "us-east-1"   
 				});
 
@@ -202,6 +203,8 @@ body{
     					console.log(data);
     					// exec only if good
 							if(data['StatusCode'] == 200){
+								localStorage.setItem('username', username);
+								localStorage.setItem('pass', password);
 								document.location.href = 'main.html';
 							}else{
 								alert("Incorrect login credentials");
