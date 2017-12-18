@@ -156,8 +156,7 @@ body{
 		<br>
 		<div class="personalPage">
 			<textarea readonly rows="50" columns="50" class="niceArea" id="display">
-				San_Franciso: 52.4 Degrees
-				Los_Angeles: 88 Degrees
+				Using magic to determine layers...
 			</textarea>
 
 			<input type="button" class="semi-transparent-button more-button" value="More Layers" onClick="tooHigh()">
@@ -169,23 +168,26 @@ body{
 			<script>
 				// Initialize the Amazon Cognito credentials provider
 				AWS.config.update({
-    			accessKeyId: ,
-    			secretAccessKey: ,
+    			accessKeyId: '',
+    			secretAccessKey: '',
    	 			"region": "us-east-1"   
 				});
 
+				var name = localStorage.getItem('username');
+				var pass = localStorage.getItem('pass');
+				var city = localStorage.getItem('City');
+				var state = localStorage.getItem('State');
 				var lambda = new AWS.Lambda({region: 'us-east-1', apiVersion: '2015-03-31'});
 				var headerItem = document.getElementById('Welcome');
 				headerItem.innerHTML = 'Welcome ' + name;
-				var name = localStorage.getItem('username');
-				var pass = localStorage.getItem('pass');
+				
 
 				function tooHigh(){
 
 					var predictedLayers = localStorage.getItem('Layers');
-					// aws call to reduce number  of layers
+					//aws call to increase number of layers
 					var params = {
-  					FunctionName : 'updatePrediction',
+  					FunctionName : 'updateLayer',
   					InvocationType : 'RequestResponse',
   					Payload: '{"Username":"' + name +'","Password":"' + pass +'","State":"' + state + '","City":"' + city +'","Layers":"' + (predictedLayers - 1).toString() + '"}',
   					LogType : 'None'
@@ -197,16 +199,13 @@ body{
   					} else {
     					// exec only if good
 							if(data['StatusCode'] == 200){
-								//print the results
-								console.log(data);
+								alert("Thank you.  Response recorded.");								
 							}else{
-								alert("Failed ML Prediction");
+								alert("Failed to store preferences");
 							}
   					}
 					});
-
-
-					alert("Thank you.  Response recorded.");
+					
 				}
 
 				function tooLow(){
@@ -214,7 +213,7 @@ body{
 					var predictedLayers = localStorage.getItem('Layers');
 					//aws call to increase number of layers
 					var params = {
-  					FunctionName : 'updatePrediction',
+  					FunctionName : 'updateLayer',
   					InvocationType : 'RequestResponse',
   					Payload: '{"Username":"' + name +'","Password":"' + pass +'","State":"' + state + '","City":"' + city +'","Layers":"' + (predictedLayers + 1).toString() + '"}',
   					LogType : 'None'
@@ -227,9 +226,9 @@ body{
     					// exec only if good
 							if(data['StatusCode'] == 200){
 								//print the results
-								console.log(data);
+								alert("Thank you.  Response recorded.");
 							}else{
-								alert("Failed ML Prediction");
+								alert("Failed to store preferences");
 							}
   					}
 					});
@@ -237,12 +236,15 @@ body{
 				}
 
 				function switchLocation(){
-					// ask for new location to update current suggestions
-					var state = prompt("Please enter state abreviation. (MD)");
-					var city = prompt("Please enter city.");
 
-					localStorage.setItem('City', city);
-					localStorage.setItem('State', state);
+					var firstAsk = localStorage.getItem('firstCheck');
+					if(firstAsk == "false"){
+						state = prompt("Please enter state abreviation. (MD)");
+						city = prompt("Please enter city.");
+					}else{
+						localStorage.setItem("firstCheck", "false");
+					}
+					
 					// invoke aws services to verify user
 					var params = {
   					FunctionName : 'predict',
@@ -257,10 +259,34 @@ body{
   					} else {
     					// exec only if good
 							if(data['StatusCode'] == 200){
-								//print the results
-								console.log(data);
+								var predictions = JSON.parse(data['Payload']);
+								var weather = predictions['Weather'];
+								var layers = predictions['Layers'];
+								var temp = weather['Temperature'];
+								var windspeed = weather['WindSpeed'];
+								var snow = weather['Snowing'];
+								var rain = weather['Raining'];
 
-								//localeStorage.setItem('Layers', 2);
+                //update user display
+								var displayItem = document.getElementById('display');
+								var output = "Below are the current weather conditions for " + state + ", " + city 
+									+ "\n" + temp + " \xBA Fahrenheit outside today.\nWindspeed up to " + windspeed + " mph\nUp to " 
+									+ snow + " inches of snow\nUp to " + rain + " inches of rain\n\n" + "Based on these conditions, you should wear " + layers + " layer(s) of extra clothing today.\n";
+
+								var layerVal = parseInt(layers);
+								// deterministic output based on layer recommendations
+								if(layerVal >= 4){
+									displayItem.innerHTML = (output + "Stay warm! It's freezing out there!");
+								}else if(layerVal >= 2){
+									displayItem.innerHTML = (output + "Stay warm! It's going to be chilly!");
+								}else if(layerVal == 1){
+									displayItem.innerHTML = (output + "Bring a light jacket, it's comfortable outside!") ;
+								}else{
+									displayItem.innerHTML = (output + "No jackets needed today. Have a great day!");
+								}
+
+								//save just in case of an update
+								localStorage.setItem('Layers', layers);
 							}else{
 								alert("Failed ML Prediction");
 							}
@@ -271,7 +297,10 @@ body{
 				function logOut() {
 					//switch back to home
 					document.location.href = 'index.html';
+					localStorage.clear();
 				}
+
+				switchLocation();
 			</script>
 		</div>
 	</body>

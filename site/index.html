@@ -173,10 +173,12 @@ body{
 			<h2 class="helper">Weather Tailored for YOU</h2>
 			<!-- Log in verification and create account options -->
 			<script>
+
+				localStorage.clear();
 				// Initialize the Amazon Cognito credentials provider
 				AWS.config.update({
-    			accessKeyId: 
-    			secretAccessKey: 
+    			accessKeyId: '',
+    			secretAccessKey: '',
    	 			"region": "us-east-1"   
 				});
 
@@ -200,11 +202,17 @@ body{
   					if (error) {
    						prompt(error);
   					} else {
-    					console.log(data);
     					// exec only if good
-							if(data['StatusCode'] == 200){
+							if(JSON.stringify(Object.keys(data['Payload']).length) >= 600){
 								localStorage.setItem('username', username);
 								localStorage.setItem('pass', password);
+								// ask for new location to update current suggestions
+								var state = prompt("Please enter state abreviation. (MD)");
+								var city = prompt("Please enter city.");
+
+								localStorage.setItem('City', city);
+								localStorage.setItem('State', state);
+								localStorage.setItem('firstCheck', "true");
 								document.location.href = 'main.html';
 							}else{
 								alert("Incorrect login credentials");
@@ -234,6 +242,8 @@ body{
 					lambda.invoke(params, function(error, data) {
   					if (error) {
    						 prompt(error);
+  					}else{
+  						alert("Account Created!")
   					}
 					});
 				}
