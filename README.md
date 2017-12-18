@@ -17,3 +17,5 @@ from the S3 bucket will global read permissions.
 Below is the Architecture diagram for this project
 ![PWA Architecture](https://raw.githubusercontent.com/BDanielCS/PersonalizedWeatherAssistant/master/archi.png)
 
+As you can see above, lambda plays a crucial role in the integration of the other aws services which is why it is
+of utmost important that the deployment environments be uploaded.
