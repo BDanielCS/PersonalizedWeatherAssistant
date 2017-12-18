@@ -13,3 +13,5 @@ Recreating this applicatiion is quite simple.  You need to zip and upload the de
 dynamodb databases in order to hold the user login and preferences information.  After performing
 those two steps, the site will be fully functional.  In this case, the site is also hosted
 from the S3 bucket will global read permissions.
+
+
