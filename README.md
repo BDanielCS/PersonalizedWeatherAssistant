@@ -26,7 +26,7 @@ with the click of a button. Below is the main screen you may see.
 Finally, to understand the aws services at play, please consult the architecture diagram below as well
 as the code within the repo.
 Below is the Architecture diagram for this project
-![PWA Architecture](https://raw.githubusercontent.com/BDanielCS/PersonalizedWeatherAssistant/master/archi.png)
+![PWA Architecture](https://raw.githubusercontent.com/BDanielCS/Personalized_Weather_Assistant/master/archi.png)
 
 As you can see above, lambda plays a crucial role in the integration of the other aws services which is why it is
 of utmost important that the deployment environments be uploaded.
