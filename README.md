@@ -9,9 +9,6 @@ the current day. The AWS Machine Learning serivce allows for accurate (92% level
 predictions for users.  All preferences will be stored in various dynamo tables and fed back to the
 user through a lambda callback.
 
-Following the link to go to the site!
-http://pwa-final-project-website.s3-website-us-east-1.amazonaws.com
-
 Recreating this applicatiion is quite simple.  You need to zip and upload the deployment packages 
 (deployment.zip and deployment2.zip) as their own lambda functions. You then need to create two
 dynamodb databases in order to hold the user login and preferences information.  After performing
